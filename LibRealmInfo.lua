@@ -9,7 +9,7 @@
 ----------------------------------------------------------------------]]
 -- Updated 4/26/2024
 
-local MAJOR, MINOR = "LibRealmInfo", 17
+local MAJOR, MINOR = "LibRealmInfo", tonumber((gsub("@project-version@","r",""))) or 9999;
 assert(LibStub, MAJOR.." requires LibStub")
 local lib, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end

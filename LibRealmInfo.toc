@@ -1,4 +1,4 @@
-## Interface: 90002
+## Interface: 110005
 ## Version: @project-version@
 
 ## Title: Lib: Realm Info
@@ -11,8 +11,10 @@
 ## X-Email: 4iamking@gmail.com
 ## X-License: Zlib
 ## X-Website: https://github.com/janekjl/LibRealmInfo
-## X-Curse-Project-ID: 83224
-## X-WoWI-ID: 22987
+## X-Curse-Project-ID: 8#3224
+## X-WoWI-ID: 2#2987
+
+## Updated-By: Hizuro
 
 ## OptionalDeps: LibStub
 LibStub\LibStub.lua

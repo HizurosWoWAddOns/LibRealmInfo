@@ -20,7 +20,7 @@ local Unpack
 
 local function debug(...)
 	if standalone then
-		print("|cffff7f7f["..MAJOR.."]|r", ...)
+		ConsolePrint("|cffff7f7f["..MAJOR.."]|r", ...)
 	end
 end
 

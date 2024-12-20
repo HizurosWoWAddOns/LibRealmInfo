@@ -1,4 +1,4 @@
-## Interface: 110005
+## Interface: 110007
 ## Version: @project-version@
 
 ## Title: Lib: Realm Info
@@ -7,14 +7,20 @@
 ## Notes-esES: Biblioteca para proporcionar información sobre reinos.
 ## Notes-esMX: Biblioteca para proporcionar información sobre reinos.
 
-## Author: janekjl
-## X-Email: 4iamking@gmail.com
+## Former-Author-1: Phanx
+## X-Website-1: https://github.com/phanx-wow/LibRealmInfo
+
+## Former-Author-2: janekjl
+## X-Email-2: 4iamking@gmail.com
+## X-Website-2: https://github.com/janekjl/LibRealmInfo
+
+## Author: Hizuro
+## X-Email: hizuro@gmx.net
+## X-Website: https://github.com/HizurosWoWAddOns/LibRealmInfo
+
 ## X-License: Zlib
-## X-Website: https://github.com/janekjl/LibRealmInfo
 ## X-Curse-Project-ID: 8#3224
 ## X-WoWI-ID: 2#2987
-
-## Updated-By: Hizuro
 
 ## OptionalDeps: LibStub
 LibStub\LibStub.lua

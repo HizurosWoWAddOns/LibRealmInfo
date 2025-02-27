@@ -1,4 +1,9 @@
 ## Interface: 110100
+## Title: Lib: Realm Info
+## Notes: Library to provide information about realms.
+## Notes-deDE: Bibliothek, um Informationen über Realms zu liefern.
+## Notes-esES: Biblioteca para proporcionar información sobre reinos.
+## Notes-esMX: Biblioteca para proporcionar información sobre reinos.
 ## Version: @project-version@
 
 ## Category-enUS: Libraries
@@ -10,14 +15,8 @@
 ## Category-koKR: 도서관
 ## Category-ptBR: Bibliotecas
 ## Category-ruRU: Библиотеки
-## Category-zhCN: 库
-## Category-zhTW: 库
-
-## Title: Lib: Realm Info
-## Notes: Library to provide information about realms.
-## Notes-deDE: Bibliothek, um Informationen über Realms zu liefern.
-## Notes-esES: Biblioteca para proporcionar información sobre reinos.
-## Notes-esMX: Biblioteca para proporcionar información sobre reinos.
+## Category-zhCN: 函数库
+## Category-zhTW: 函式庫
 
 ## Former-Author-1: Phanx
 ## X-Website-1: https://github.com/phanx-wow/LibRealmInfo

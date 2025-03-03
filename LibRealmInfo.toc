@@ -4,6 +4,7 @@
 ## Notes-deDE: Bibliothek, um Informationen über Realms zu liefern.
 ## Notes-esES: Biblioteca para proporcionar información sobre reinos.
 ## Notes-esMX: Biblioteca para proporcionar información sobre reinos.
+## IconTexture: 986485
 ## Version: @project-version@
 
 ## Category-enUS: Libraries

@@ -19,8 +19,9 @@ local realmData, connectionData
 local Unpack
 
 local function debug(...)
+	local args = {tostringall(...)};
 	if standalone then
-		ConsolePrint("|cffff7f7f["..MAJOR.."]|r", ...)
+		DeveloperConsole:AddMessage("|cffff7f7f["..MAJOR.."]|r "..table.concat(args," "))
 	end
 end
 

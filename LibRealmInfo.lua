@@ -108,16 +108,19 @@ function lib:GetRealmInfo(name, region, asTable)
 
 	for id, realm in pairs(realmData) do
 		if realm.region == region and (realm.nameForAPI == name or realm.name == name or realm.englishNameForAPI == name or realm.englishName == name) then
+			if asTable then
+				return CopyTable(realm);
+			end
 			return id, realm.name, realm.nameForAPI, realm.rules, realm.locale, nil, realm.region, realm.timezone, shallowCopy(realm.connections), realm.englishName, realm.englishNameForAPI, realm.utc
 		end
 	end
 
-	debug("No info found for realm", name, "in region", region)
+	debug("No info found for realm", name, "in region", region, asTable and "return as table" or "return old style")
 end
 
 ------------------------------------------------------------------------
 
-function lib:GetRealmInfoByID(id)
+function lib:GetRealmInfoByID(id,asTable)
 	debug("GetRealmInfoByID", id)
 	id = tonumber(id)
 	assert(id, "Usage: GetRealmInfoByID(id)")
@@ -128,6 +131,9 @@ function lib:GetRealmInfoByID(id)
 
 	local realm = realmData[id]
 	if realm and realm.name then
+		if asTable then
+			return CopyTable(realm);
+		end
 		return realm.id, realm.name, realm.nameForAPI, realm.rules, realm.locale, nil, realm.region, realm.timezone, shallowCopy(realm.connections), realm.englishName, realm.englishNameForAPI, realm.utc
 	end
 
@@ -136,7 +142,7 @@ end
 
 ------------------------------------------------------------------------
 
-function lib:GetRealmInfoByGUID(guid)
+function lib:GetRealmInfoByGUID(guid,asTable)
 	assert(type(guid) == "string", "Usage: GetRealmInfoByGUID(guid)")
 	if not strmatch(guid, "^Player%-") then
 		return debug("Unsupported GUID type", (strsplit("-", guid)))
@@ -145,18 +151,18 @@ function lib:GetRealmInfoByGUID(guid)
 	if realm == "" then
 		realm = GetRealmName()
 	end
-	return self:GetRealmInfo(realm)
+	return self:GetRealmInfo(realm,nil,asTable)
 end
 
 ------------------------------------------------------------------------
 
-function lib:GetRealmInfoByUnit(unit)
+function lib:GetRealmInfoByUnit(unit,asTable)
 	assert(type(unit) == "string", "Usage: GetRealmInfoByUnit(unit)")
 	local guid = UnitGUID(unit)
 	if not guid then
 		return debug("No GUID available for unit", unit)
 	end
-	return self:GetRealmInfoByGUID(guid)
+	return self:GetRealmInfoByGUID(guid,asTable)
 end
 
 ------------------------------------------------------------------------

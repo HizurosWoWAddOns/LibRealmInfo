@@ -68,9 +68,27 @@ end
 ------------------------------------------------------------------------
 
 local validRegions = { US = true, EU = true, CN = true, KR = true, TW = true }
+local timezone2utc = {
+	--region: eu
+	CET=1, -- Central European Time
 
-function lib:GetRealmInfo(name, region)
-	debug("GetRealmInfo", name, region)
+	-- region: cn/tw
+	CNST=8, -- China Standard Time
+
+	-- region: kr
+	KST=9, -- korea standard time
+
+	-- region: us
+	AEST=10, -- Australian Eastern Standard Time
+	PST=-8, -- Pacific Standard Time
+	MST=-7, -- Mountain Standard Time
+	CST=-6, -- Central Standard Time
+	EST=-5, -- Eastern Standard Time
+	BRT=-3, -- Brazil Standard Time
+};
+
+function lib:GetRealmInfo(name, region, asTable)
+	debug("GetRealmInfo", name, region, asTable)
 	local isString = type(name) == "string"
 	if isString then
 		name = strtrim(name)
@@ -90,7 +108,7 @@ function lib:GetRealmInfo(name, region)
 
 	for id, realm in pairs(realmData) do
 		if realm.region == region and (realm.nameForAPI == name or realm.name == name or realm.englishNameForAPI == name or realm.englishName == name) then
-			return id, realm.name, realm.nameForAPI, realm.rules, realm.locale, nil, realm.region, realm.timezone, shallowCopy(realm.connections), realm.englishName, realm.englishNameForAPI
+			return id, realm.name, realm.nameForAPI, realm.rules, realm.locale, nil, realm.region, realm.timezone, shallowCopy(realm.connections), realm.englishName, realm.englishNameForAPI, realm.utc
 		end
 	end
 
@@ -110,7 +128,7 @@ function lib:GetRealmInfoByID(id)
 
 	local realm = realmData[id]
 	if realm and realm.name then
-		return realm.id, realm.name, realm.nameForAPI, realm.rules, realm.locale, nil, realm.region, realm.timezone, shallowCopy(realm.connections), realm.englishName, realm.englishNameForAPI
+		return realm.id, realm.name, realm.nameForAPI, realm.rules, realm.locale, nil, realm.region, realm.timezone, shallowCopy(realm.connections), realm.englishName, realm.englishNameForAPI, realm.utc
 	end
 
 	debug("No info found for realm ID", name)
@@ -163,7 +181,8 @@ function Unpack()
 			rules = string.upper(rules),
 			locale = locale,
 			region = region,
-			timezone = timezone, -- only for realms in US region
+			timezone = timezone,
+			utc = timezone2utc[timezone],
 			englishName = englishName, -- only for realms with non-Latin names
 			englishNameForAPI = getNameForAPI(englishName), -- only for realms with non-Latin names
 		}

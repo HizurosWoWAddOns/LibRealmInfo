@@ -111,7 +111,7 @@ function lib:GetRealmInfo(name, region, asTable)
 			if asTable then
 				return CopyTable(realm);
 			end
-			return id, realm.name, realm.nameForAPI, realm.rules, realm.locale, nil, realm.region, realm.timezone, shallowCopy(realm.connections), realm.englishName, realm.englishNameForAPI, realm.utc
+			return id, realm.name, realm.nameForAPI, realm.rules, realm.locale, nil, realm.region, realm.timezone, shallowCopy(realm.connections), realm.englishName, realm.englishNameForAPI, realm.utc, realm.gameClient
 		end
 	end
 
@@ -134,10 +134,10 @@ function lib:GetRealmInfoByID(id,asTable)
 		if asTable then
 			return CopyTable(realm);
 		end
-		return realm.id, realm.name, realm.nameForAPI, realm.rules, realm.locale, nil, realm.region, realm.timezone, shallowCopy(realm.connections), realm.englishName, realm.englishNameForAPI, realm.utc
+		return realm.id, realm.name, realm.nameForAPI, realm.rules, realm.locale, nil, realm.region, realm.timezone, shallowCopy(realm.connections), realm.englishName, realm.englishNameForAPI, realm.utc, realm.gameClient
 	end
 
-	debug("No info found for realm ID", name)
+	debug("No info found for realm ID", id)
 end
 
 ------------------------------------------------------------------------
@@ -174,9 +174,9 @@ function Unpack()
 		-- Aegwynn,PvE,enUS,US,CST
 		-- Nathrezim,PvE,deDE,EU
 		-- Азурегос,PvE,ruRU,EU,Azuregos
-		local name, rules, locale, region, timezone, englishName = strsplit(",", info)
+		local name, rules, locale, region, timezone, englishName, gameClient = strsplit(",", info)
 
-		if englishName=="" then
+		if englishName=="" or name==englishName then
 			englishName=nil;
 		end
 
@@ -191,6 +191,7 @@ function Unpack()
 			utc = timezone2utc[timezone],
 			englishName = englishName, -- only for realms with non-Latin names
 			englishNameForAPI = getNameForAPI(englishName), -- only for realms with non-Latin names
+			gameClient = gameClient, -- retail, classic, classic-era
 		}
 	end
 

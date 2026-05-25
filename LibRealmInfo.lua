@@ -39,6 +39,9 @@ local function getNameForAPI(name)
 	return name and (name:gsub("[%s%-]", "")) or nil
 end
 
+local issecretvalue = issecretvalue or function() return false end
+local canaccessvalue = canaccessvalue or function() return true end
+
 ------------------------------------------------------------------------
 
 function lib:EnableDebug()
@@ -57,7 +60,7 @@ function lib:GetCurrentRegion()
 	end
 
 	local guid = UnitGUID("player")
-	if guid then
+	if guid and (not issecretvalue(guid) or canaccessvalue(guid)) then
 		local server = tonumber(strmatch(guid, "^Player%-(%d+)"))
 		local realm = realmData[server]
 		if realm then
@@ -165,6 +168,8 @@ function lib:GetRealmInfoByUnit(unit,asTable)
 	local guid = UnitGUID(unit)
 	if not guid then
 		return debug("No GUID available for unit", unit)
+	elseif issecretvalue(guid) and not canaccessvalue(guid) then
+		return debug("GUID is secret value and is protected")
 	end
 	return self:GetRealmInfoByGUID(guid,asTable)
 end

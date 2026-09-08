@@ -95,11 +95,12 @@ end
 function lib:GetRealmInfo(name, region, asTable)
 	debug("GetRealmInfo", name, region, asTable)
 	local isString = type(name) == "string"
-	if isString then
+	if type(name) == "string" then
 		name = strtrim(name)
 	end
-	if type(name) == "number" or isString and strmatch(name, "^%d+$") then
-		return self:GetRealmInfoByID(name)
+	local id = tonumber(name)
+	if id then
+		return self:GetRealmInfoByID(id)
 	end
 	assert(isString and strlen(name) > 0, "Usage: GetRealmInfo(name[, region])")
 
@@ -127,14 +128,14 @@ end
 
 function lib:GetRealmInfoByID(id,asTable)
 	debug("GetRealmInfoByID", id)
-	id = tonumber(id)
-	assert(id, "Usage: GetRealmInfoByID(id)")
+	local ID = tonumber(id)
+	assert(ID, "Usage: GetRealmInfoByID(id)")
 
 	if Unpack then
 		Unpack()
 	end
 
-	local realm = realmData[id]
+	local realm = realmData[ID]
 	if type(realm)=="table" and realm.name then
 		if asTable then
 			return CopyTable(realm);
@@ -142,7 +143,7 @@ function lib:GetRealmInfoByID(id,asTable)
 		return realm.id, realm.name, realm.nameForAPI, realm.rules, realm.locale, nil, realm.region, realm.timezone, shallowCopy(realm.connections), realm.englishName, realm.englishNameForAPI, realm.utc, realm.gameClient
 	end
 
-	debug("No info found for realm ID", id)
+	debug("No info found for realm ID", ID)
 end
 
 ------------------------------------------------------------------------
@@ -179,7 +180,7 @@ end
 
 function Unpack()
 	debug("Unpacking data...")
-
+	local tmp = {}
 	for id, info in pairs(realmData) do
 		-- Aegwynn,PvE,enUS,US,CST
 		-- Nathrezim,PvE,deDE,EU
@@ -190,7 +191,7 @@ function Unpack()
 		--	englishName=nil;
 		--end
 
-		realmData[id] = {
+		tmp[id] = {
 			id = id,
 			name = name,
 			nameForAPI = getNameForAPI(name),
@@ -204,6 +205,7 @@ function Unpack()
 			gameClient = gameClient, -- retail, classic, classic-era
 		}
 	end
+	realmData = tmp
 
 	for _, connectedRealmsStr in ipairs(connectionData) do
 		local connectedRealms = { strsplit(",", connectedRealmsStr) };

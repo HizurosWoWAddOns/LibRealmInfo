@@ -70,6 +70,7 @@ function lib:EnableDebug()
 	debuggingOn = true;
 end
 
+---@return string region_code
 function lib:GetCurrentRegion()
 	if currentRegion then
 		return currentRegion
@@ -92,6 +93,22 @@ function lib:GetCurrentRegion()
 	debug("GetCurrentRegion: could not identify region based on player GUID", guid)
 end
 
+---@param name string|number Realm name or RealmID
+---@param region? string Region code (valid entries: US, EU, CN, KR, TW)
+---@param asTable? boolean Return result as table
+---@return table|number? realmIdOrTable RealmID or table (if asTable=true)
+---@return string? Name
+---@return string? NameForAPI (stripped dashes and spaces)
+---@return string? Rules PvE or PvP
+---@return string? Locale
+---@return nil? Pool (deprecated)
+---@return string? Region
+---@return string? Timezone
+---@return table? Connections
+---@return string? EnglishName (if local name not written with latin characters)
+---@return string? EnglishNameForAPI  (if local name not written with latin characters)
+---@return string? TimeDifferenceFromUTC (in hours)
+---@return string? gameClient
 function lib:GetRealmInfo(name, region, asTable)
 	debug("GetRealmInfo", name, region, asTable)
 	local isString = type(name) == "string"
@@ -126,6 +143,21 @@ end
 
 ------------------------------------------------------------------------
 
+---@param id number RealmID
+---@param asTable? boolean Return result as table
+---@return table|number? realmIdOrTable RealmID or table (if asTable=true)
+---@return string? Name
+---@return string? NameForAPI (stripped dashes and spaces)
+---@return string? Rules PvE or PvP
+---@return string? Locale
+---@return nil? Pool (deprecated)
+---@return string? Region
+---@return string? Timezone
+---@return table? Connections
+---@return string? EnglishName (if local name not written with latin characters)
+---@return string? EnglishNameForAPI  (if local name not written with latin characters)
+---@return string? TimeDifferenceFromUTC (in hours)
+---@return string? gameClient
 function lib:GetRealmInfoByID(id,asTable)
 	debug("GetRealmInfoByID", id)
 	local ID = tonumber(id)
@@ -148,6 +180,21 @@ end
 
 ------------------------------------------------------------------------
 
+---@param guid string A player GUID
+---@param asTable? boolean Return result as table
+---@return table|number? realmIdOrTable RealmID or table (if asTable=true)
+---@return string? Name
+---@return string? NameForAPI (stripped dashes and spaces)
+---@return string? Rules PvE or PvP
+---@return string? Locale
+---@return nil? Pool (deprecated)
+---@return string? Region
+---@return string? Timezone
+---@return table? Connections
+---@return string? EnglishName (if local name not written with latin characters)
+---@return string? EnglishNameForAPI  (if local name not written with latin characters)
+---@return string? TimeDifferenceFromUTC (in hours)
+---@return string? gameClient
 function lib:GetRealmInfoByGUID(guid,asTable)
 	assert(type(guid) == "string", "Usage: GetRealmInfoByGUID(guid)")
 	if not strmatch(guid, "^Player%-") then
@@ -163,6 +210,21 @@ end
 
 ------------------------------------------------------------------------
 
+---@param unit number Unit name
+---@param asTable? boolean Return result as table
+---@return table|number? realmIdOrTable RealmID or table (if asTable=true)
+---@return string? Name
+---@return string? NameForAPI (stripped dashes and spaces)
+---@return string? Rules PvE or PvP
+---@return string? Locale
+---@return nil? Pool (deprecated)
+---@return string? Region
+---@return string? Timezone
+---@return table? Connections
+---@return string? EnglishName (if local name not written with latin characters)
+---@return string? EnglishNameForAPI  (if local name not written with latin characters)
+---@return string? TimeDifferenceFromUTC (in hours)
+---@return string? gameClient
 function lib:GetRealmInfoByUnit(unit,asTable)
 	assert(type(unit) == "string", "Usage: GetRealmInfoByUnit(unit)")
 	local guid = UnitGUID(unit)

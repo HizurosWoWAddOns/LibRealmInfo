@@ -14,66 +14,10 @@ assert(LibStub, MAJOR.." requires LibStub")
 local lib, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end
 
-local debuggingOn = (...) == MAJOR
+local debuggingOn = false; --(...) == MAJOR
 local realmData, connectionData
 local Unpack
-
-local function debug(...)
-	local args = {tostringall(...)};
-	if debuggingOn then
-		DeveloperConsole:AddMessage("|cffff7f7f["..MAJOR.."]|r "..table.concat(args," "))
-	end
-end
-
-local function shallowCopy(t)
-	if not t then return end
-
-	local n = {}
-	for k, v in next, t do
-		n[k] = v
-	end
-	return n
-end
-
-local function getNameForAPI(name)
-	return name and (name:gsub("[%s%-]", "")) or nil
-end
-
-local issecretvalue = issecretvalue or function() return false end
-local canaccessvalue = canaccessvalue or function() return true end
-
-------------------------------------------------------------------------
-
-function lib:EnableDebug()
-	debuggingOn = true;
-end
-
 local currentRegion
-
-function lib:GetCurrentRegion()
-	if currentRegion then
-		return currentRegion
-	end
-
-	if Unpack then
-		Unpack()
-	end
-
-	local guid = UnitGUID("player")
-	if guid and (not issecretvalue(guid) or canaccessvalue(guid)) then
-		local server = tonumber(strmatch(guid, "^Player%-(%d+)"))
-		local realm = realmData[server]
-		if realm then
-			currentRegion = realm.region
-			return currentRegion
-		end
-	end
-
-	debug("GetCurrentRegion: could not identify region based on player GUID", guid)
-end
-
-------------------------------------------------------------------------
-
 local validRegions = { US = true, EU = true, CN = true, KR = true, TW = true }
 local timezone2utc = {
 	--region: eu
@@ -93,6 +37,60 @@ local timezone2utc = {
 	EST=-5, -- Eastern Standard Time
 	BRT=-3, -- Brazil Standard Time
 };
+
+------------------------------------------------------------------------
+
+local issecretvalue = issecretvalue or function() return false end
+local canaccessvalue = canaccessvalue or function() return true end
+
+local function debug(...)
+	if not debuggingOn then
+		return
+	end
+	DeveloperConsole:AddMessage("|cffff7f7f["..MAJOR..","..MINOR.."]|r "..table.concat({tostringall(...)},", "))
+end
+
+local function shallowCopy(t)
+	if not t then return end
+
+	local n = {}
+	for k, v in next, t do
+		n[k] = v
+	end
+	return n
+end
+
+local function getNameForAPI(name)
+	return name and (name:gsub("[%s%-]", "")) or nil
+end
+
+------------------------------------------------------------------------
+
+function lib:EnableDebug()
+	debuggingOn = true;
+end
+
+function lib:GetCurrentRegion()
+	if currentRegion then
+		return currentRegion
+	end
+
+	if Unpack then
+		Unpack()
+	end
+
+	local guid = UnitGUID("player")
+	if guid and (not issecretvalue(guid) or canaccessvalue(guid)) then
+		local server = tonumber(strmatch(guid, "^Player%-(%d+)"))
+		local realm = realmData[server]
+		if type(realm)=="table" and realm.region then
+			currentRegion = realm.region
+			return currentRegion
+		end
+	end
+
+	debug("GetCurrentRegion: could not identify region based on player GUID", guid)
+end
 
 function lib:GetRealmInfo(name, region, asTable)
 	debug("GetRealmInfo", name, region, asTable)
@@ -114,7 +112,7 @@ function lib:GetRealmInfo(name, region, asTable)
 	end
 
 	for id, realm in pairs(realmData) do
-		if realm.region == region and (realm.nameForAPI == name or realm.name == name or realm.englishNameForAPI == name or realm.englishName == name) then
+		if type(realm)=="table" and realm.region == region and (realm.nameForAPI == name or realm.name == name or realm.englishNameForAPI == name or realm.englishName == name) then
 			if asTable then
 				return CopyTable(realm);
 			end
@@ -137,7 +135,7 @@ function lib:GetRealmInfoByID(id,asTable)
 	end
 
 	local realm = realmData[id]
-	if realm and realm.name then
+	if type(realm)=="table" and realm.name then
 		if asTable then
 			return CopyTable(realm);
 		end
@@ -152,7 +150,8 @@ end
 function lib:GetRealmInfoByGUID(guid,asTable)
 	assert(type(guid) == "string", "Usage: GetRealmInfoByGUID(guid)")
 	if not strmatch(guid, "^Player%-") then
-		return debug("Unsupported GUID type", (strsplit("-", guid)))
+		debug("Unsupported GUID type", (strsplit("-", guid)))
+		return
 	end
 	local _, _, _, _, _, _, realm = GetPlayerInfoByGUID(guid)
 	if realm == "" then
@@ -167,9 +166,11 @@ function lib:GetRealmInfoByUnit(unit,asTable)
 	assert(type(unit) == "string", "Usage: GetRealmInfoByUnit(unit)")
 	local guid = UnitGUID(unit)
 	if not guid then
-		return debug("No GUID available for unit", unit)
+		debug("No GUID available for unit", unit)
+		return
 	elseif issecretvalue(guid) and not canaccessvalue(guid) then
-		return debug("GUID is secret value and is protected")
+		debug("GUID is secret value and is protected")
+		return
 	end
 	return self:GetRealmInfoByGUID(guid,asTable)
 end
@@ -228,7 +229,7 @@ function Unpack()
 		local autoCompleteIDs = {}
 		for _, name in pairs(autoCompleteRealms) do
 			for realmID, realm in pairs(realmData) do
-				if realm.nameForAPI == name then
+				if type(realm)=="table" and realm.nameForAPI == name then
 					table.insert(autoCompleteIDs, realmID)
 					break
 				end
